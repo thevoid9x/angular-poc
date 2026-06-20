@@ -1,0 +1,47 @@
+<main>
+  <section class="hero">
+    <p class="eyebrow">Angular 22.0.2 reproduction</p>
+    <h1>Query parameter parser collision</h1>
+    <p class="summary">
+      A query key named <code>hasOwnProperty</code> overwrites a method on Angular's
+      parameter accumulator. Parsing the next parameter then attempts to call the string.
+    </p>
+  </section>
+
+  <section class="panel">
+    <h2>Test input</h2>
+    <label for="tested-url">URL passed to both parsers</label>
+    <output id="tested-url">{{ testedUrl }}</output>
+    <div class="actions">
+      <button type="button" (click)="runTest(vulnerableUrl)">Run vulnerable payload</button>
+      <button class="secondary" type="button" (click)="runTest(safeUrl)">Run safe control</button>
+    </div>
+  </section>
+
+  <section class="results" aria-live="polite">
+    <article [class.failure]="result.direct.startsWith('THREW')">
+      <p class="label">DefaultUrlSerializer.parse()</p>
+      <h2>{{ result.direct.startsWith('THREW') ? 'Parser failure reproduced' : 'Parsed normally' }}</h2>
+      <pre>{{ result.direct }}</pre>
+    </article>
+
+    <article>
+      <p class="label">Router.parseUrl()</p>
+      <h2>Guarded product behavior</h2>
+      <pre>{{ result.router }}</pre>
+    </article>
+  </section>
+
+  <section class="panel details">
+    <h2>Deployment check</h2>
+    <p>
+      Original URL captured before Angular bootstrap:
+      <code>{{ initialUrl }}</code>
+    </p>
+    <p>
+      After deployment, open <code>/?hasOwnProperty=first&amp;later=second</code> directly and
+      inspect the browser console. Angular warns that it could not parse the URL and falls back to
+      <code>/</code>.
+    </p>
+  </section>
+</main>
